@@ -5,16 +5,20 @@ import Product from '../components/Product';
 import { listProducts } from '../actions/productActions';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
+
   const dispatch = useDispatch();
 
   const productList = useSelector(state => state.productList);
-  const { loading, err, products } = productList;
+  const { loading, err, products, page, pages } = productList;
 
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(keyword, pageNumber));
+  }, [dispatch, keyword, pageNumber]);
 
   return (
     <>
@@ -32,6 +36,7 @@ const HomeScreen = () => {
           ))}
         </Row>
       )}
+      <Paginate pages={pages} page={page} keyword={keyword ? keyword : ''} />
     </>
   );
 };
